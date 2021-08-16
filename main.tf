@@ -1,6 +1,11 @@
+resource "random_password" "admin_password" {
+    length = 32
+    special = false
+}
+
 data "triton_image" "os" {
-    name = "base-64-lts"
-    version = "20.4.0"
+    name = "postgresql12-patroni"
+    version = "20210815"
 }
 
 resource "triton_machine" "postgresql" {
@@ -26,20 +31,23 @@ resource "triton_machine" "postgresql" {
         host = self.primaryip
     }
 
+    provisioner "file" {
+        content = templatefile("${path.module}/templates/patroni.yml.tpl", {
+            hostname = "postgresql-${count.index}"
+            consul_addr = var.config.consul_addr
+            consul_scope = var.config.consul_scope
+            admin_password = random_password.admin_password.result
+            listen_ip = self.primaryip
+        })
+        destination = "/var/pgsql/patroni.yml"
+    }
+
     provisioner "remote-exec" {
         inline = [
-            "pkgin -y update",
-            "pkgin -y in postgresql12",
-            "pkgin -y in consul",
+            "chown postgres /var/pgsql/patroni.yml",
+            "chgrp postgres /var/pgsql/patroni.yml",
 
-            # Patroni dependencies
-            "pkgin -y in gcc9",
-            "pkgin -y in py38-psycopg2",
-            
-            "python3.8 -m ensurepip --upgrade",
-            "python3.8 -m pip install --upgrade pip",
-
-            "pip3 install patroni[consul]",
+            "svcadm enable patroni",
         ]
     }
 }
