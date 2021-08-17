@@ -7,7 +7,7 @@ restapi:
   connect_address: ${listen_ip}:8008
 
 consul:
-  host: ${consul_addr}
+  host: localhost:8500
   register_service: true
 
 bootstrap:
