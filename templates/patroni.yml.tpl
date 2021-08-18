@@ -1,5 +1,5 @@
 scope: ${consul_scope}
-#namespace: /service/
+namespace: ${consul_namespace}
 name: ${hostname}
 
 restapi:

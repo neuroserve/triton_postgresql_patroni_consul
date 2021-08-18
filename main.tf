@@ -118,6 +118,7 @@ resource "triton_machine" "postgresql" {
             hostname = "postgresql-${count.index}"
             consul_addr = var.config.consul_addr
             consul_scope = var.config.consul_scope
+            consul_namespace = var.config.consul_namespace
             admin_password = random_password.admin_password.result
             listen_ip = self.primaryip
         })
