@@ -48,7 +48,7 @@ resource "tls_locally_signed_cert" "consul" {
 
 data "triton_image" "os" {
     name = "postgresql12-patroni-consul"
-    version = "20210815"
+    version = var.config.image_version
 }
 
 resource "triton_machine" "postgresql" {
