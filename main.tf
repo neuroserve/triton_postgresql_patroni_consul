@@ -77,11 +77,12 @@ resource "triton_machine" "postgresql-c" {
     connection {
        type = "ssh"
        user = "root" 
-       private_key = "$file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
+       private_key = "${file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
        agent = "true" 
        bastion_host = "10.65.69.143"
        bastion_user = "root" 
        bastion_private_key = "${file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
+       host = self.primaryip
     }
 
 #    provisioner "remote-exec" {
@@ -124,7 +125,7 @@ resource "triton_machine" "postgresql-c" {
     }
 
     provisioner "file" {
-        content = templatefile("${path.module}/templates/patroni.yml.tpl", {
+        content = templatefile("${path.module}/templates/patroni-c.yml.tpl", {
             hostname = "postgresql-citus-control-${count.index}"
             consul_addr = var.config.consul_addr
             consul_scope = var.config.consul_scope
@@ -167,11 +168,12 @@ resource "triton_machine" "postgresql-w" {
     connection {
        type = "ssh"
        user = "root"
-       private_key = "$file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
+       private_key = "${file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
        agent = "true"
        bastion_host = "10.65.69.143"
        bastion_user = "root"
        bastion_private_key = "${file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
+       host = self.primaryip
     }
 
     provisioner "file" {
@@ -191,7 +193,7 @@ resource "triton_machine" "postgresql-w" {
     }
 
     provisioner "file" {
-        content = templatefile("${path.module}/templates/patroni.yml.tpl", {
+        content = templatefile("${path.module}/templates/patroni-w.yml.tpl", {
             hostname = "postgresql-citus-worker-${count.index}"
             consul_addr = var.config.consul_addr
             consul_scope = var.config.consul_scope
