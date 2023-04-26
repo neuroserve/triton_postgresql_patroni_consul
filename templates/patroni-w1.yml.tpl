@@ -11,7 +11,7 @@ consul:
   register_service: true
 
 citus:
-  group: 0
+  group: 1
   database: citus
 
 bootstrap:
@@ -62,7 +62,6 @@ postgresql:
       password: rewind_password
   parameters:
     unix_socket_directories: '.'
-    max_connections: '400'
 
 tags:
     nofailover: false
