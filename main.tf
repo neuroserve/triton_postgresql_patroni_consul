@@ -70,6 +70,7 @@ resource "triton_machine" "postgresql-c" {
 
     tags = {
         role = "postgresql"
+        "tritoncli.ssh.proxy" = "bast2"
     }
     
     affinity = ["role!=~postgresql"]
@@ -161,7 +162,7 @@ resource "triton_machine" "postgresql-w1" {
 
     tags = {
         role = "postgresql"
-        tritoncli_ssh_proxy = "bast2"
+        "tritoncli.ssh.proxy" = "bast2"
     }
 
     affinity = ["role!=~postgresql"]
@@ -230,7 +231,7 @@ resource "triton_machine" "postgresql-w2" {
 
     tags = {
         role = "postgresql"
-        tritoncli_ssh_proxy = "bast2"
+        "tritoncli.ssh.proxy" = "bast2"
     }
 
     affinity = ["role!=~postgresql"]
