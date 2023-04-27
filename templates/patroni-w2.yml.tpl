@@ -23,6 +23,8 @@ bootstrap:
     postgresql:
       use_pg_rewind: true
       parameters:
+        max_connections: '500'
+        full_page_writes: 'off'
 
   # some desired options for 'initdb'
   initdb:  # Note: It needs to be a list (some options need values, others are switches)
@@ -62,8 +64,6 @@ postgresql:
       password: rewind_password
   parameters:
     unix_socket_directories: '.'
-    max_connections: '500'
-    full_page_writes: 'off'
 
 tags:
     nofailover: false
