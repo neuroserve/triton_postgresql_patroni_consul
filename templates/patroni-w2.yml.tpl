@@ -25,6 +25,7 @@ bootstrap:
       parameters:
         max_connections: '500'
         full_page_writes: 'off'
+        max_prepared_transactions: '400'
 
   # some desired options for 'initdb'
   initdb:  # Note: It needs to be a list (some options need values, others are switches)
