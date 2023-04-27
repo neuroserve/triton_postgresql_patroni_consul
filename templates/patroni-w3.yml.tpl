@@ -11,7 +11,7 @@ consul:
   register_service: true
 
 citus:
-  group: 2
+  group: 3
   database: citus
 
 bootstrap:
