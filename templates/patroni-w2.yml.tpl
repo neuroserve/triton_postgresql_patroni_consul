@@ -62,6 +62,8 @@ postgresql:
       password: rewind_password
   parameters:
     unix_socket_directories: '.'
+    max_connections: '500'
+    full_page_writes = 'off'
 
 tags:
     nofailover: false

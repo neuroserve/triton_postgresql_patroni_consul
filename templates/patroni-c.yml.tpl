@@ -63,6 +63,7 @@ postgresql:
   parameters:
     unix_socket_directories: '.'
     max_connections: '400'
+    full_page_writes = 'off'
 
 tags:
     nofailover: false
