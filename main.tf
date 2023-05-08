@@ -58,7 +58,7 @@ data "triton_image" "os" {
 resource "triton_machine" "postgresql-c" {
     count = var.config.vm.creplicas
     name = "postgresql-citus-control-${count.index}"
-    package = "sample-8G"
+    package = "sample-2G"
 
     image = data.triton_image.os.id
 
@@ -150,7 +150,7 @@ resource "triton_machine" "postgresql-c" {
 resource "triton_machine" "postgresql-w1" {
     count = var.config.vm.wcluster1
     name = "postgresql-citus-wcluster1-${count.index}"
-    package = "sample-2G"
+    package = "sample-8G"
 
     image = data.triton_image.os.id
 
@@ -219,7 +219,7 @@ resource "triton_machine" "postgresql-w1" {
 resource "triton_machine" "postgresql-w2" {
     count = var.config.vm.wcluster2
     name = "postgresql-citus-wcluster2-${count.index}"
-    package = "sample-2G"
+    package = "sample-8G"
 
     image = data.triton_image.os.id
 
@@ -288,7 +288,7 @@ resource "triton_machine" "postgresql-w2" {
 resource "triton_machine" "postgresql-w3" {
     count = var.config.vm.wcluster3
     name = "postgresql-citus-wcluster3-${count.index}"
-    package = "sample-2G"
+    package = "sample-8G"
 
     image = data.triton_image.os.id
 
@@ -319,7 +319,7 @@ resource "triton_machine" "postgresql-w3" {
     provisioner "file" {
         content = templatefile("${path.module}/templates/consul.hcl.tpl", {
             datacenter_name = var.config.consul_datacenter_name,
-            node_name = "postgresql-citus-wcluster2-${count.index}"
+            node_name = "postgresql-citus-wcluster3-${count.index}"
             consul_addr = var.config.consul_addr,
             encryption_key = var.config.consul_encryption_key,
         })
@@ -354,3 +354,71 @@ resource "triton_machine" "postgresql-w3" {
     }
 }
 
+resource "triton_machine" "postgresql-w4" {
+    count = var.config.vm.wcluster4
+    name = "postgresql-citus-wcluster4-${count.index}"
+    package = "sample-8G"
+
+    image = data.triton_image.os.id
+
+    cns {
+        services = ["postgresql"]
+    }
+
+    networks = var.config.machine_networks
+
+    tags = {
+        role = "postgresql"
+        "tritoncli.ssh.proxy" = "bast2"
+    }
+
+    affinity = ["role!=~postgresql"]
+
+    connection {
+       type = "ssh"
+       user = "root"
+       private_key = "${file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
+       agent = "true"
+       bastion_host = "10.65.69.143"
+       bastion_user = "root"
+       bastion_private_key = "${file("~/.ssh/sdc-docker-hbloed.id_rsa")}"
+       host = self.primaryip
+    }
+
+    provisioner "file" {
+        content = templatefile("${path.module}/templates/consul.hcl.tpl", {
+            datacenter_name = var.config.consul_datacenter_name,
+            node_name = "postgresql-citus-wcluster4-${count.index}"
+            consul_addr = var.config.consul_addr,
+            encryption_key = var.config.consul_encryption_key,
+        })
+        destination = "/opt/local/etc/consul.d/consul.hcl"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "svcadm enable consul",
+        ]
+    }
+
+    provisioner "file" {
+        content = templatefile("${path.module}/templates/patroni-w4.yml.tpl", {
+            hostname = "postgresql-citus-wcluster4-${count.index}"
+            consul_addr = var.config.consul_addr
+            consul_scope = var.config.consul_scope
+            consul_namespace = var.config.consul_namespace
+            admin_password = random_password.admin_password.result
+            listen_ip = self.primaryip
+        })
+        destination = "/var/pgsql/patroni.yml"
+    }
+
+    provisioner "remote-exec" {
+        inline = [
+            "chown postgres /var/pgsql/patroni.yml",
+            "chgrp postgres /var/pgsql/patroni.yml",
+
+            "svcadm enable patroni",
+        ]
+    }
+}

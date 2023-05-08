@@ -26,6 +26,8 @@ bootstrap:
         max_connections: '400'
         full_page_writes: 'off'
         max_prepared_transactions: '400'
+        shared_buffers: '2GB'
+        wal_sync_method: 'fdatasync'
 
 
   # some desired options for 'initdb'
