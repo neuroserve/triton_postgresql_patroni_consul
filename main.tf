@@ -58,7 +58,7 @@ data "triton_image" "os" {
 resource "triton_machine" "postgresql-c" {
     count = var.config.vm.creplicas
     name = "postgresql-citus-control-${count.index}"
-    package = "sample-4G"
+    package = "sample-8G"
 
     image = data.triton_image.os.id
 
