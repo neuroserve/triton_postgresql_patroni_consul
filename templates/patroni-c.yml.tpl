@@ -26,7 +26,7 @@ bootstrap:
         max_connections: '400'
         full_page_writes: 'off'
         max_prepared_transactions: '400'
-        shared_buffers: '500MB'
+        shared_buffers: '1GB'
         wal_sync_method: 'fdatasync'
 
 
