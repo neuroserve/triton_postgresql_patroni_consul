@@ -1,0 +1,22 @@
+config = {
+  connkey = "/pathtoyourkey/id_rsa" 
+  bastionhost = "yourbastionhostip"
+  vm = { 
+    replicas = "3"
+  }
+  organization = { 
+    name = "yourorganisation"
+  }
+  certificate_authority = { 
+    algorithm = "aes256"
+    private_key_pem = "yourcakeypem"
+    certificate_pem = "xourcacertpem"
+  }
+  image_version = 2023050801
+  machine_networks = ["yourtritonnetworkid"]
+  consul_datacenter_name = "tritondcname"
+  consul_addr = "127.0.0.1"
+  consul_encryption_key = "yoursecretencryptionkey"
+  consul_scope = "citus1"
+  consul_namespace = "citus"
+}
