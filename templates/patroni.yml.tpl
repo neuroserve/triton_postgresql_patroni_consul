@@ -19,6 +19,13 @@ bootstrap:
     postgresql:
       use_pg_rewind: true
       parameters:
+        max_connections: '400'
+        full_page_writes: 'off'
+        max_prepared_transactions: '400'
+        shared_buffers: '12GB'
+        wal_sync_method: 'fdatasync'
+        wal_recycle: 'off'
+        wal_init_zero: 'off'
 
   # some desired options for 'initdb'
   initdb:  # Note: It needs to be a list (some options need values, others are switches)
